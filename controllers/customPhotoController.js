@@ -1,0 +1,85 @@
+const CustomPhoto = require('../models/CustomPhoto');
+
+const handleUploadCustomPhoto = async (req, res) => {
+    const customPhotos = req.body
+
+    if (!customPhotos || customPhotos.length === 0) {
+        return res.status(400).json({
+            message: "Photo(s) is/are is required"
+        });
+    }
+    try {
+        await CustomPhoto.insertMany(customPhotos);
+        res.sendStatus(201)
+    } catch (error) {
+        res.status(500).json({
+            message: "Error uploading photo",
+            success: false,
+            error: error.message
+        })
+    }
+
+}
+
+const handleGetCustomPhotos = async (req, res) => {
+    const { limit } = req.params
+    try {
+        const customPhotos = await CustomPhoto.find().limit(parseInt(limit)).exec();
+
+        const count = await CustomPhoto.countDocuments()
+        res.status(200).json({
+            photos: customPhotos,
+            count
+        })
+    } catch (error) {
+        res.status(500).json({
+            message: "Error getting photos",
+            success: false,
+            error: error.message
+        })
+    }
+}
+
+const handleGetSingleCustomPhoto = async (req, res) => {
+    const { id } = req.params
+    if (!id) return res.status(400).json({ message: "Photo ID field is required" });
+
+    try {
+        const singlePhoto = await CustomPhoto.findById(id).exec();
+        if (!singlePhoto) return res.status(204).json({ message: "Photo not found" });
+
+        res.status(200).json(singlePhoto)
+
+    } catch (error) {
+        res.status(500).json({
+            message: "Error fetching image",
+            success: false,
+            error: error
+        })
+    }
+
+}
+
+const handleDeleteCustomPhoto = async (req, res) => {
+    const { photoId: id } = req.body;
+
+    try {
+        if (!id) return res.status(400).json({ message: "Select a photo to delete, id not found!" });
+
+        const photo = await CustomPhoto.findById(id);
+        if (!photo) return res.status(400).json({ message: "Photo has been deleted" });
+
+        await CustomPhoto.deleteOne({ _id: photo._id })
+
+        res.sendStatus(204)
+
+    } catch (error) {
+        res.status(500).json({
+            message: "Error deleting photos",
+            success: false,
+            error: error.message
+        })
+    }
+}
+
+module.exports = { handleUploadCustomPhoto, handleGetCustomPhotos, handleGetSingleCustomPhoto, handleDeleteCustomPhoto }
