@@ -1,23 +1,29 @@
-const ImageKit = require('imagekit')
-
-const imagekit = new ImageKit({
-    urlEndpoint: process.env.IMAGE_KIT_ENDPOINT,
-    publicKey: process.env.IMAGE_KIT_PUBLIC_KEY,
-    privateKey: process.env.IMAGE_KIT_PRIVATE_KEY
-});
+const imagekit = require('../config/ikConfig')
 
 const handleUpload = async (req, res) => {
     try {
-        const result = imagekit.getAuthenticationParameters();
-        res.json(result);
+        const { count } = req.query; // Expect the number of files to upload
+        if (count) {
+            const fileCount = parseInt(count, 10) || 1;
+
+            const tokens = [];
+            for (let i = 0; i < fileCount; i++) {
+                const result = imagekit.getAuthenticationParameters(); // Generate a unique token
+                tokens.push(result);
+            }
+
+            return res.json(tokens);
+        } else {
+            const result = imagekit.getAuthenticationParameters();
+            return res.json(result);
+        }
     } catch (error) {
         res.status(500).json({
             message: "Server error",
-            success: false,
             error: error
-        })
+        });
     }
-}
+};
 
 const handleFetchAllImageAndDelete = async () => {
     try {
@@ -58,4 +64,4 @@ const handleDeleteFilesByPaths = async (inputPaths) => {
     }
 };
 
-module.exports = { handleUpload, handleDeleteFilesByPaths }
+module.exports = { handleUpload }
