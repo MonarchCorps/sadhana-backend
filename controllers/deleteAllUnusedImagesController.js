@@ -5,7 +5,7 @@ const CustomPhoto = require('../models/CustomPhoto')
 const Course = require('../models/Course')
 const Enrolled = require('../models/Enrolled')
 const BotChat = require('../models/BotChat')
-
+const mongoose = require('mongoose')
 const imagekit = require('../config/ikConfig')
 
 const schemas = [
