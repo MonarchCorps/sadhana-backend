@@ -71,18 +71,16 @@ const handleDeleteCustomPhoto = async (req, res) => {
     const { photoId: id } = req.body;
 
     try {
-        if (!id) return res.status(400).json({ message: "Select a photo to delete, id not found!" });
+        if (!id)
+            return res.status(400).json({ message: "Select a photo to delete, id not found!" });
 
         const photo = await CustomPhoto.findById(id);
-        if (!photo) return res.status(400).json({ message: "Photo has been deleted" });
-
-        const fileId = photo.customPhoto.split("/")[4].split("?")[0]; // get's the fileId after https://ik.imagekit.io/${process.env.IMAGEKIT_ENDPOINT}/
-        await imagekit.deleteFile(fileId);
+        if (!photo)
+            return res.status(400).json({ message: "Photo has been deleted" });
 
         await CustomPhoto.deleteOne({ _id: photo._id })
 
         res.sendStatus(204)
-
     } catch (error) {
         res.status(500).json({
             message: "Error deleting photos",
