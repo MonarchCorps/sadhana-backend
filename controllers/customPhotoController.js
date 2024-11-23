@@ -1,32 +1,39 @@
 const CustomPhoto = require('../models/CustomPhoto');
+const imagekit = require('../config/ikConfig')
 
 const handleUploadCustomPhoto = async (req, res) => {
-    const customPhotos = req.body
+    const customPhotos = req.body;
 
-    if (!customPhotos || customPhotos.length === 0) {
+    if (!Array.isArray(customPhotos) || customPhotos.length === 0) {
         return res.status(400).json({
-            message: "Photo(s) is/are is required"
+            message: "Photo(s) are required"
         });
     }
+
+    if (customPhotos.some(photo => !photo.customPhoto)) {
+        return res.status(400).json({
+            message: "Each photo object must have a customPhoto field"
+        });
+    }
+
     try {
         await CustomPhoto.insertMany(customPhotos);
-        res.sendStatus(201)
+        res.sendStatus(201);
     } catch (error) {
         res.status(500).json({
             message: "Error uploading photo",
-            success: false,
             error: error.message
-        })
+        });
     }
+};
 
-}
 
 const handleGetCustomPhotos = async (req, res) => {
     const { limit } = req.params
     try {
         const customPhotos = await CustomPhoto.find().limit(parseInt(limit)).exec();
-
         const count = await CustomPhoto.countDocuments()
+
         res.status(200).json({
             photos: customPhotos,
             count
@@ -69,6 +76,9 @@ const handleDeleteCustomPhoto = async (req, res) => {
         const photo = await CustomPhoto.findById(id);
         if (!photo) return res.status(400).json({ message: "Photo has been deleted" });
 
+        const fileId = photo.customPhoto.split("/")[4].split("?")[0]; // get's the fileId after https://ik.imagekit.io/${process.env.IMAGEKIT_ENDPOINT}/
+        await imagekit.deleteFile(fileId);
+
         await CustomPhoto.deleteOne({ _id: photo._id })
 
         res.sendStatus(204)
@@ -76,7 +86,6 @@ const handleDeleteCustomPhoto = async (req, res) => {
     } catch (error) {
         res.status(500).json({
             message: "Error deleting photos",
-            success: false,
             error: error.message
         })
     }
