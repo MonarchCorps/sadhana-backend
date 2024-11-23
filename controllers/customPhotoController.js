@@ -31,7 +31,12 @@ const handleUploadCustomPhoto = async (req, res) => {
 const handleGetCustomPhotos = async (req, res) => {
     const { limit } = req.params
     try {
-        const customPhotos = await CustomPhoto.find().limit(parseInt(limit)).exec();
+
+        const customPhotos = await CustomPhoto.find()
+            .sort({ _id: -1 }) // Sort by most recent documents
+            .limit(parseInt(limit))
+            .exec();
+
         const count = await CustomPhoto.countDocuments()
 
         res.status(200).json({
