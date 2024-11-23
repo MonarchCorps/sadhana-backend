@@ -11,11 +11,13 @@ const enrolledSchema = new Schema({
         type: String,
         required: true
     },
-    courseDetails: {
-        type: Array,
-        default: [],
-        required: true
-    },
+    courseDetails: [
+        {
+            title: String,
+            description: String,
+            thumbnailPhoto: String,
+        },
+    ],
     paymentDetails: {
         paymentId: {
             type: String,
