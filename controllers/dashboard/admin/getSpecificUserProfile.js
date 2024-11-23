@@ -56,7 +56,6 @@ const handleGetSpecificUserProfile = async (req, res) => {
 
         res.status(200).json(responseToSend)
     } catch (error) {
-        console.log(error)
         res.status(500).json({
             message: "Error getting user profile",
             error: error.message

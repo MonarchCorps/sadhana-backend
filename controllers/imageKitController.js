@@ -47,7 +47,6 @@ const handleDeleteFilesByPaths = async (inputPaths) => {
         console.log(filePaths)
         const deletionPromises = filePaths.map(async (filePath) => {
             const files = await imagekit.listFiles({ path: filePath });
-            console.log(files)
             if (files.length === 0) {
                 return console.log(`No file found at path: ${filePath}`);
             }
@@ -58,7 +57,6 @@ const handleDeleteFilesByPaths = async (inputPaths) => {
         });
 
         const results = await Promise.all(deletionPromises);
-        console.log(results)
     } catch (error) {
         console.error('Error during file deletions:', error);
     }

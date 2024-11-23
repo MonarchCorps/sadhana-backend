@@ -86,7 +86,6 @@ const handleEditUser = async (req, res) => {
         const userOnly = UserOnly(updatedRoles)
 
         if (userAndInstructor) {
-            console.log('Hi')
             if (instructorId && instructorStatus === 'pending') {
                 await Instructor.updateOne(
                     id,
@@ -125,7 +124,6 @@ const handleEditUser = async (req, res) => {
 
         res.sendStatus(200);
     } catch (error) {
-        console.log(error)
         res.status(500).json({
             message: "Error updating user",
             success: false,
