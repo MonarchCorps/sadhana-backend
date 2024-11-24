@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const { Schema } = mongoose
+const { v4: uuidv4 } = require('uuid');
 
 const enrolledSchema = new Schema({
     userId: {
@@ -13,42 +14,37 @@ const enrolledSchema = new Schema({
     },
     courseDetails: [
         {
-            title: String,
-            description: String,
+            _id: String,
+            classname: String,
             thumbnailPhoto: String,
+            videoUrl: String,
+            description: String,
+            day: String,
+            time: Object,
+            instructorId: String,
+            paidPrice: Number,
+            referenceNumber: {
+                type: String,
+                unique: true,
+                default: uuidv4,
+            }
         },
     ],
     paymentDetails: {
         paymentId: {
             type: String,
-            required: true
+            default: ''
         },
-        payment_method_type: {
-            type: String,
-            required: true
-        },
+        payment_method_type: [],
         payment_status: {
             type: String,
-            required: true
-
+            default: ''
         }
     },
-    referenceNumber: {
-        type: String,
-        required: true,
-        unique: true
-    },
+    shipping_options: [],
     totalAmount: {
         type: Number,
         default: 0
-    },
-    cardType: {
-        type: String,
-        required: true
-    },
-    fees: {
-        type: Number,
-        require: true
     }
 }, {
     timestamps: true
