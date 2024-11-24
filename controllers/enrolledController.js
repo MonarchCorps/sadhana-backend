@@ -1,12 +1,13 @@
 const Enrolled = require('../models/Enrolled');
 
 const handleGetEnrolled = async (req, res) => {
+    const { userId } = req.params
 
-    const userId = req.params
-    if (!userId) return res.status(500).json({ message: "ID not found!" });
+    if (!userId)
+        return res.status(500).json({ message: "ID not found!" });
 
     try {
-        const enrolledCourses = await Enrolled.findOne({ userId: userId }).lean().exec()
+        const enrolledCourses = await Enrolled.find({ userId }).lean().exec()
         if (!enrolledCourses)
             return res.status(204).json({ message: "No course found" })
 
