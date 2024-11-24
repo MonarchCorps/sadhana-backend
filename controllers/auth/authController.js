@@ -16,6 +16,14 @@ const getUserData = async (usernameOrToken) => {
             }
         },
         {
+            $lookup: {
+                from: "courses",
+                localField: "_id",
+                foreignField: "userId",
+                as: "courses"
+            }
+        },
+        {
             $project: {
                 _id: 1,
                 username: 1,
@@ -30,7 +38,8 @@ const getUserData = async (usernameOrToken) => {
                 selectedCourses: 1,
                 instructorData: {
                     $arrayElemAt: ["$instructorData", 0]
-                }
+                },
+                courseCount: { $size: '$courses' },
             }
         }
     ])
@@ -61,7 +70,8 @@ const generateAccessTokenAndResponse = (user) => {
         profileImage: user.profileImage,
         email: user.email,
         _id: user._id,
-        selectedCourses: user.selectedCourses
+        selectedCourses: user.selectedCourses,
+        courseCount: user.courseCount
     }
 
     if (user.instructorData) {
