@@ -36,6 +36,10 @@ app.use('/last-active', require('./routes/lastActive'));
 
 app.use('/upload', require('./routes/upload'))
 
+/****** I put the webhook here cos, the verifyJwt is interfering with it *******/
+app.use('/webhook', require('./routes/webhook'))
+/****************/
+
 // jwt's middleware
 app.use(verifyJWT);
 
