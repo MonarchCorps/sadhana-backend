@@ -59,7 +59,7 @@ const handleNewUser = async (req, res) => {
 
         res.cookie('jwt', refreshToken, {
             httpOnly: true,
-            sameSite: 'None',
+            sameSite: 'strict',
             secure: true, // Use secure true in production
             maxAge: 7 * 24 * 60 * 60 * 1000
         });
