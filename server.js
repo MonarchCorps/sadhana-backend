@@ -1,6 +1,5 @@
 require('dotenv').config();
 const express = require('express')
-const app = express()
 const { default: mongoose } = require('mongoose')
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
@@ -8,6 +7,8 @@ const connectDB = require('./config/dbConnection')
 const credentials = require('./middleWare/credentials')
 const corsOptions = require('./config/corsOptions')
 const verifyJWT = require('./middleWare/verifyJWT')
+
+const { app, server } = require('./config/socket')
 const PORT = process.env.PORT || 3500
 
 connectDB();
@@ -38,7 +39,7 @@ app.use('/upload', require('./routes/upload'))
 
 /****** I put the webhook here cos, the verifyJwt is interfering with it *******/
 app.use('/webhook', require('./routes/webhook'))
-/****************/
+/**********************************************************/
 
 // jwt's middleware
 app.use(verifyJWT);
@@ -69,9 +70,14 @@ app.use('/banks', require('./routes/getBanks'))
 app.use('/payment', require('./routes/payment'))
 app.use('/earnings', require('./routes/api/instructorEarnings'))
 
+app.use('/conversation', require('./routes/chat/conversation'))
+app.use('/message', require('./routes/chat/message'))
+
+app.use('/chat/all-users', require('./routes/allUsers'))
+
 mongoose.connection.once('open', () => {
     console.log('Connected to Database successfully');
-    app.listen(PORT, () => {
+    server.listen(PORT, () => {
         console.log(`Server running on PORT: ${PORT}`);
     })
 });
