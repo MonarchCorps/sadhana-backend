@@ -47,7 +47,7 @@ const handleCreateConversation = async (req, res) => {
 }
 
 const handleGetMyConversations = async (req, res) => {
-    const { id } = req.params;
+    const { id } = req.params; /**@params this is the User Id we will check for any conversation the user is in */
 
     try {
         const conversations = await Conversation.find({ participants: id }).lean();
@@ -75,8 +75,6 @@ const handleGetMyConversations = async (req, res) => {
                     .limit(1)
                     .lean();
 
-                const i = await Message.find({ conversation: conversation._id })
-
                 return {
                     userDetails,
                     ...conversation,
@@ -102,7 +100,6 @@ const handleGetGroupMembers = async (req, res) => {
     }
 
     try {
-        // Fetch the conversation
         const conversation = await Conversation.findById({ _id: new mongoose.Types.ObjectId(conversationId) }).lean().exec();
 
         if (!conversation) {
@@ -113,7 +110,6 @@ const handleGetGroupMembers = async (req, res) => {
 
         const objectIdArray = participantsId.map(id => new mongoose.Types.ObjectId(id));
 
-        // Query users who are participants
         const users = await User.find({ _id: { $in: objectIdArray } })
             .lean()
             .select('username email roles profileImage phoneNumber gender')

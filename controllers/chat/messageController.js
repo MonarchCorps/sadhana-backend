@@ -59,9 +59,9 @@ const handleGetMessages = async (req, res) => {
     }
 }
 
-const handleSendTextMessage = async (req, res) => {
+const handleSendMessage = async (req, res) => {
     const { id } = req.params;
-    const { content, conversation } = req.body;
+    const { content, conversation, messageType } = req.body;
 
     try {
         const conversationExists = await Conversation.findById({ _id: conversation });
@@ -75,7 +75,7 @@ const handleSendTextMessage = async (req, res) => {
             sender: id,
             content,
             conversation,
-            messageType: 'text',
+            messageType,
         });
 
         const sender = await User.findById(id).lean();
@@ -106,4 +106,7 @@ const handleSendTextMessage = async (req, res) => {
     }
 }
 
-module.exports = { handleGetMessages, handleSendTextMessage }
+
+
+
+module.exports = { handleGetMessages, handleSendMessage }
