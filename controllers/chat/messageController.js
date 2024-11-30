@@ -106,7 +106,4 @@ const handleSendMessage = async (req, res) => {
     }
 }
 
-
-
-
 module.exports = { handleGetMessages, handleSendMessage }

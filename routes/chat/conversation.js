@@ -7,5 +7,6 @@ router.route('/:id')
     .post(conversationController.handleCreateConversation);
 
 router.get('/group-members/:conversationId', conversationController.handleGetGroupMembers)
+router.post('/remover-member/:id', conversationController.handleRemoveUser)
 
 module.exports = router

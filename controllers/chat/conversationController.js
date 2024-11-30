@@ -32,13 +32,13 @@ const handleCreateConversation = async (req, res) => {
                 console.log(`Emitting to user ${participantId} with socket ID ${socketId}, convId: ${newConversation._id} `);
                 io.to(socketId).emit('newConversation', newConversation);
             } else {
-                console.warn(`Socket ID not found for user ${participantId}`);
+                console.warn(`Socket ID not found for user ${participantId}`)
             }
         });
 
         res.status(201).json(newConversation._id);
     } catch (error) {
-        console.error('Error creating conversation:', error.message);
+        console.error('Error creating conversation:', error.message)
         res.status(500).json({
             message: 'Error creating conversation',
             error: error.message,
@@ -88,7 +88,7 @@ const handleGetMyConversations = async (req, res) => {
         res.status(500).json({
             message: 'Error fetching conversations',
             error: error.message
-        });
+        })
     }
 }
 
@@ -96,14 +96,14 @@ const handleGetGroupMembers = async (req, res) => {
     const { conversationId } = req.params;
 
     if (!conversationId) {
-        return res.status(400).json({ message: "conversationId is required" });
+        return res.status(400).json({ message: "conversationId is required" })
     }
 
     try {
         const conversation = await Conversation.findById({ _id: new mongoose.Types.ObjectId(conversationId) }).lean().exec();
 
         if (!conversation) {
-            return res.status(404).json({ message: "Conversation not found" });
+            return res.status(404).json({ message: "Conversation not found" })
         }
 
         const participantsId = conversation.participants;
@@ -121,8 +121,48 @@ const handleGetGroupMembers = async (req, res) => {
             message: "Error fetching group members",
             success: false,
             error: error.message,
-        });
+        })
     }
 }
 
-module.exports = { handleCreateConversation, handleGetMyConversations, handleGetGroupMembers }
+const handleRemoveUser = async (req, res) => {
+    const { id: userToDeleteId } = req.params;
+    const { conversationId } = req.body;
+
+    if (!userToDeleteId || !conversationId)
+        return res.status(400).json({ message: "Both user ID and conversation ID are required." });
+
+    try {
+        const updatedConversation = await Conversation.findByIdAndUpdate(
+            conversationId,
+            { $pull: { participants: userToDeleteId } },
+            { new: true }
+        )
+
+        if (!updatedConversation)
+            return res.status(404).json({ message: "Conversation not found." });
+
+        const payLoad = {
+            conversation: updatedConversation._id,
+            removedUser: userToDeleteId
+        }
+
+        updatedConversation.participants.forEach((participantId) => {
+            const socketId = getSocketIdByUserId(participantId);
+            if (socketId) {
+                io.to(socketId).emit('removedUser', payLoad);
+            }
+        })
+
+        res.status(200).json(updatedConversation)
+    } catch (error) {
+        console.error("Error removing user:", error.message)
+        res.status(500).json({
+            message: "Error removing user.",
+            success: false,
+            error: error.message
+        })
+    }
+}
+
+module.exports = { handleCreateConversation, handleGetMyConversations, handleGetGroupMembers, handleRemoveUser }
