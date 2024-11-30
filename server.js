@@ -74,6 +74,7 @@ app.use('/conversation', require('./routes/chat/conversation'))
 app.use('/message', require('./routes/chat/message'))
 
 app.use('/chat/all-users', require('./routes/allUsers'))
+app.use('/chat/token', require('./routes/getToken'))
 
 mongoose.connection.once('open', () => {
     console.log('Connected to Database successfully');
