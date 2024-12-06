@@ -1,21 +1,21 @@
 
-const { handleGetAllUsers } = require('./manageUsers')
+const { handleGetAllUsers } = require('./manageUsersController')
 
-const { handlePendingInstructor } = require('./manageUsers')
+const { handlePendingInstructor } = require('./manageUsersController')
 
-const { handlePendingClass } = require('./manageClasses')
+const { handlePendingClass } = require('./manageClassesController')
 
-const { handleInstructorApproval } = require('./manageUsers')
+const { handleInstructorApproval } = require('./manageUsersController')
 
-const { handleClassesApproval } = require('./manageClasses')
+const { handleClassesApproval } = require('./manageClassesController')
 
-const { handleDeleteUser } = require('./manageUsers')
+const { handleDeleteUser } = require('./manageUsersController')
 
-const { handleDeleteClass } = require('./manageClasses')
+const { handleDeleteClass } = require('./manageClassesController')
 
 const { handleEditUser } = require('./editUserController')
 
-const { handleGetSpecificUserProfile } = require('./getSpecificUserProfile')
+const { handleGetSpecificUserProfile } = require('./getSpecificUserProfileController')
 
 
 module.exports = { handlePendingInstructor, handleInstructorApproval, handlePendingClass, handleClassesApproval, handleGetAllUsers, handleDeleteUser, handleEditUser, handleDeleteClass, handleGetSpecificUserProfile };
