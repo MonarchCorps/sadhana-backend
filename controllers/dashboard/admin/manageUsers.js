@@ -4,6 +4,8 @@ const Course = require('../../../models/Course')
 
 const handleEmail = require('../../emailController')
 const mongoose = require('mongoose')
+const Payment = require('../../../models/Payment')
+const BotChat = require('../../../models/BotChat')
 
 const handleGetAllUsers = async (req, res) => {
     try {
@@ -154,8 +156,8 @@ const handleInstructorApproval = async (req, res) => {
 
 const handleDeleteUser = async (req, res) => {
 
-    const { usersId } = req.body;
-    const { id: currentUserId } = req.params;
+    const { usersId } = req.body
+    const { id: currentUserId } = req.params
 
     try {
 
@@ -163,7 +165,7 @@ const handleDeleteUser = async (req, res) => {
             return res.status(400).json({ message: "You cannot delete yourself" })
 
         if (usersId.length <= 0)
-            return res.status(400).json({ message: "Select a user to delete, id not found!" });
+            return res.status(400).json({ message: "Select a user to delete, id not found!" })
 
         const instructorsToDelete = await Instructor.find({ userId: { $in: usersId } }).select("_id").lean().exec()
         const coursesToDelete = await Course.find({ userId: { $in: usersId } }).select("_id").lean().exec()
@@ -171,19 +173,37 @@ const handleDeleteUser = async (req, res) => {
         const courseIds = coursesToDelete.map((course) => course._id)
         const instructorsId = instructorsToDelete.map(inst => inst._id)
 
-        await Promise.all([
-            Instructor.deleteMany({ _id: { $in: instructorsId } }),
+        for (const id of usersId) {
+            const user = await User.findById(id).select('username').lean().exec()
+            const madePayment = await Payment.findOne({ userId: id }).lean().exec()
 
-            User.updateMany(
-                { "selectedCourses.courseId": { $in: courseIds } },
-                { $pull: { selectedCourses: { courseId: { $in: courseIds } } } }
-            ),
+            if (madePayment) {
+                return res.status(400).json({ message: `${user.username} has enrolled for a course` })
+            }
+        }
 
-            Course.deleteMany({ _id: { $in: courseIds } }),
+        const mongoSession = await mongoose.startSession()
+        mongoSession.startTransaction()
 
-            User.deleteMany({ _id: { $in: usersId } }),
+        try {
+            await Promise.all([
+                Instructor.deleteMany({ _id: { $in: instructorsId } }),
+                User.updateMany(
+                    { "selectedCourses.courseId": { $in: courseIds } },
+                    { $pull: { selectedCourses: { courseId: { $in: courseIds } } } }
+                ),
+                Course.deleteMany({ _id: { $in: courseIds } }),
+                User.deleteMany({ _id: { $in: usersId } }),
+                BotChat.deleteMany({ userId: { $in: usersId } })
+            ])
 
-        ])
+            await mongoSession.commitTransaction()
+            mongoSession.endSession()
+        } catch (error) {
+            await mongoSession.abortTransaction()
+            mongoSession.endSession()
+            throw error
+        }
 
         res.sendStatus(204)
 
