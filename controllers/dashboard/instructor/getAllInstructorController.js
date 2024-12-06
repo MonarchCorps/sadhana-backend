@@ -11,7 +11,7 @@ const getAllInstructor = async (req, res) => {
                     as: 'user',
                 },
             },
-            { $unwind: "$user" },
+            { $unwind: { path: "$user", preserveNullAndEmptyArrays: true } },
             {
                 $match: {
                     $or: [
@@ -44,12 +44,11 @@ const getAllInstructor = async (req, res) => {
                     phoneNumber: '$user.phoneNumber',
                 },
             },
-        ]);
+        ])
 
         if (!instructors || instructors.length === 0) {
             return res.status(204).json({ message: 'No instructors found' });
         }
-
         res.json(instructors);
     } catch (error) {
         res.status(500).json({
