@@ -49,7 +49,6 @@ app.use('/admin-cp', require('./routes/api/admin'));
 
 // instructor route
 app.use('/instructor-cp/edit-instructor-profile', require('./routes/api/instructor'))
-app.use('/create-instructor-account', require('./routes/api/instructor'))
 
 // students route
 app.use('/student-cp', require('./routes/api/user'));
@@ -66,9 +65,7 @@ app.use('/custom-photo', require('./routes/customPhoto'))
 
 app.use('/enrolled', require('./routes/enrolled'))
 
-app.use('/banks', require('./routes/getBanks'))
 app.use('/payment', require('./routes/payment'))
-app.use('/earnings', require('./routes/api/instructorEarnings'))
 
 app.use('/conversation', require('./routes/chat/conversation'))
 app.use('/message', require('./routes/chat/message'))

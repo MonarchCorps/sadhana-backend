@@ -8,6 +8,5 @@ const instructorController = require('../../controllers/dashboard/instructor/ins
 router.use(verifyRoles(ROLES_LIST.Instructor))
 
 router.patch('/:id', instructorController.handleEditInstructorProfile)
-router.post('/', instructorController.handleCreateAccount)
 
 module.exports = router;
