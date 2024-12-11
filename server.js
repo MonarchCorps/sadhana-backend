@@ -65,7 +65,9 @@ app.use('/custom-photo', require('./routes/customPhoto'))
 
 app.use('/enrolled', require('./routes/enrolled'))
 
+app.use('/earning', require('./routes/earning'))
 app.use('/payment', require('./routes/payment'))
+app.use('/payout', require('./routes/payout'))
 
 app.use('/conversation', require('./routes/chat/conversation'))
 app.use('/message', require('./routes/chat/message'))
