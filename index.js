@@ -22,7 +22,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use('/', require('./routes/root'));
-app.use('/home', (req, res) => res.send('Hello'))
+app.get('/home', (req, res) => res.send('Hello'))
 
 app.use(express.json());
 
