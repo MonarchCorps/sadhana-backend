@@ -1,5 +1,5 @@
 const allowedOrigins = [
-    'http://localhost:3500',
-    'http://localhost:5173'
+    'https://sadhana-backend.vercel.app/',
+    'https://sadhana-frontend.vercel.app/'
 ]
 module.exports = allowedOrigins
