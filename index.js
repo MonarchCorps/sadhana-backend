@@ -4,7 +4,6 @@ const { default: mongoose } = require('mongoose')
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
 const connectDB = require('./config/dbConnection')
-const credentials = require('./middleWare/credentials')
 const corsOptions = require('./config/corsOptions')
 const verifyJWT = require('./middleWare/verifyJWT')
 
@@ -12,8 +11,6 @@ const { app, server } = require('./config/socket')
 const PORT = process.env.PORT || 3500
 
 connectDB();
-
-app.use(credentials);
 
 app.use(cors(corsOptions));
 
