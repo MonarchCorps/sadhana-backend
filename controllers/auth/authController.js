@@ -111,7 +111,7 @@ const handleLogin = async (req, res) => {
 
         res.cookie('jwt', refreshToken, {
             httpOnly: true,
-            sameSite: 'strict',
+            sameSite: 'none',
             secure: true,
             maxAge: 7 * 24 * 60 * 60 * 1000
         });
@@ -178,13 +178,13 @@ const handleLogout = async (req, res) => {
 
         const [user] = result
         if (!user) {
-            res.clearCookie('jwt', { httpOnly: true, sameSite: 'strict', secure: true });
+            res.clearCookie('jwt', { httpOnly: true, sameSite: 'none', secure: true });
             return res.sendStatus(204);
         }
 
         await User.updateOne({ _id: user._id }, { $set: { refreshToken: '' } })
 
-        res.clearCookie('jwt', { httpOnly: true, sameSite: 'strict', secure: true }); // secure: true - only servers on https
+        res.clearCookie('jwt', { httpOnly: true, sameSite: 'none', secure: true }); // secure: true - only servers on https
         res.sendStatus(204);
 
     } catch (error) {
