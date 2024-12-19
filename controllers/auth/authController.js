@@ -180,7 +180,7 @@ const handleLogout = async (req, res) => {
 
         const [user] = result
         if (!user) {
-            res.clearCookie('jwt', { httpOnly: true, sameSite: 'none', secure: true });
+            // res.clearCookie('jwt', { httpOnly: true, sameSite: 'none', secure: true });
             return res.sendStatus(204);
         }
 
