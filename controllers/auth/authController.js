@@ -40,6 +40,7 @@ const getUserData = async (usernameOrToken) => {
                     $arrayElemAt: ["$instructorData", 0]
                 },
                 courseCount: { $size: '$courses' },
+                closeModal: 1,
             }
         }
     ])
@@ -71,7 +72,8 @@ const generateAccessTokenAndResponse = (user) => {
         email: user.email,
         _id: user._id,
         selectedCourses: user.selectedCourses,
-        courseCount: user.courseCount
+        courseCount: user.courseCount,
+        closeModal: user.closeModal
     }
 
     if (user.instructorData) {

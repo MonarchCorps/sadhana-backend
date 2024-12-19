@@ -66,6 +66,10 @@ const userSchema = new Schema({
         type: Date,
         default: Date.now
     },
+    closeModal: {
+        type: Boolean,
+        default: false
+    },
     refreshToken: String
 }, {
     timestamps: true

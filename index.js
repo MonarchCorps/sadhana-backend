@@ -73,6 +73,8 @@ app.use('/message', require('./routes/chat/message'))
 app.use('/chat/all-users', require('./routes/allUsers'))
 app.use('/chat/token', require('./routes/getToken'))
 
+app.use('/close-modal', require('./routes/closeModal'))
+
 mongoose.connection.once('open', () => {
     console.log('Connected to Database successfully');
     server.listen(PORT, () => {

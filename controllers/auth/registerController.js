@@ -75,7 +75,8 @@ const handleNewUser = async (req, res) => {
             email: newUser.email,
             _id: newUser._id,
             profileImage: newUser.profileImage,
-            selectedCourses: newUser.selectedCourses
+            selectedCourses: newUser.selectedCourses,
+            closeModal: newUser.closeModal
         }
 
         res.status(201).json(userResponse);
